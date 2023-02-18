@@ -2,7 +2,7 @@
  * @Description: 首页
  * @Author: 余子怡
  * @Date: 2023-02-05 22:38:53
- * @LastEditTime: 2023-02-10 22:51:58
+ * @LastEditTime: 2023-02-17 21:09:44
 -->
 <template>
   <div class="home">
@@ -25,10 +25,10 @@
             <i class="el-icon-caret-bottom" />
           </div>
           <el-dropdown-menu slot="dropdown" class="user-dropdown">
-            <router-link :to="toPerson" v-if="role != 0">
+            <router-link to="personal" v-if="role != 1">
               <el-dropdown-item> 个人中心 </el-dropdown-item>
             </router-link>
-            <el-dropdown-item v-if="role == 0"> 管理员 </el-dropdown-item>
+            <el-dropdown-item v-if="role == 1"> 管理员 </el-dropdown-item>
             <el-dropdown-item divided @click.native="handlePwd">
               <span style="display: block">修改密码</span>
             </el-dropdown-item>
@@ -46,7 +46,7 @@
       <router-view></router-view>
     </div>
     <!-- 修改密码弹窗 -->
-     <el-dialog title="修改密码" :visible.sync="updatePwd" width="570px">
+    <el-dialog title="修改密码" :visible.sync="updatePwd" width="570px">
       <el-form
         :model="upPwdForm"
         :rules="rules"
@@ -78,14 +78,13 @@
             placeholder="请再输入密码"
           ></el-input>
         </el-form-item>
-        <el-form-item>
-        </el-form-item>
+        <el-form-item> </el-form-item>
       </el-form>
-  <div slot="footer" class="dialog-footer">
-    <el-button type="primary" @click="submitForm">提交</el-button>
-          <el-button @click="resetForm">重置</el-button>
-  </div>
-</el-dialog>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">提交</el-button>
+        <el-button @click="resetForm">重置</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -101,7 +100,7 @@ export default {
       if (!value) {
         callback(new Error("请输入旧密码"));
       } else if (value !== this.pwd) {
-        console.log('cccccccc',value,this.pwd);
+        console.log("cccccccc", value, this.pwd);
         callback(new Error("密码错误"));
       } else {
         callback();
@@ -129,10 +128,10 @@ export default {
     return {
       role: "",
       toPerson: "",
-      updatePwd:false,
+      updatePwd: false,
       upPwdForm: {},
-      pwd:'',
-      id:'',
+      pwd: "",
+      id: "",
       rules: {
         oldPass: [{ validator: validateOldPass, trigger: "blur" }],
         password: [{ validator: validatePass, trigger: "blur" }],
@@ -145,14 +144,9 @@ export default {
     this.id = this.$store.state.user.id;
     this.pwd = this.$store.state.user.password;
     console.log(this.$store.state.user);
-    if (this.role == 1) {
-      this.toPerson = "/person";
-    } else {
-      this.toPerson = "/personal";
-    }
   },
   methods: {
-    handlePwd(){
+    handlePwd() {
       this.updatePwd = true;
     },
     submitForm() {

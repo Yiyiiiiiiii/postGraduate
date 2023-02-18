@@ -2,7 +2,7 @@
  * @Description: 订餐管理
  * @Author: 余子怡
  * @Date: 2023-02-10 16:33:38
- * @LastEditTime: 2023-02-17 18:59:53
+ * @LastEditTime: 2023-02-17 21:40:04
 -->
 <template>
   <div class="orderMeal">
@@ -48,20 +48,25 @@
         </el-table-column>
         <el-table-column align="center" label="相关用户">
           <template slot-scope="scope">
-            {{ scope.row.User.name }}
+            {{ scope.row.User?.name }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="餐品名称">
           <template slot-scope="scope">
-            {{ scope.row.Food.name || "" }}
+            {{ scope.row.Food?.name || "" }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="图片">
           <template slot-scope="scope">
             <el-image
-        style="width: 100px; height: 100px"
-      :src="scope.row.picture ? scope.row.Food.picture : url"
-      fit="cover"></el-image>
+              style="width: 100px; height: 100px"
+              :src="
+                scope.row.picture
+                  ? scope.row.Food.picture
+                  : require('../../assets/alt/food.jpg')
+              "
+              fit="cover"
+            ></el-image>
           </template>
         </el-table-column>
         <el-table-column align="center" label="订餐时间">
@@ -71,7 +76,9 @@
         </el-table-column>
         <el-table-column align="center" label="订单状态">
           <template slot-scope="scope">
-            {{ options.find((it) => it.value === scope.row.status)?.label || "" }}
+            {{
+              options.find((it) => it.value === scope.row.status)?.label || ""
+            }}
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="200">
@@ -117,31 +124,39 @@
         </template>
         <el-form :model="row" :rules="rules" ref="ruleForm">
           <el-form-item label="相关用户:" :label-width="formLabelWidth">
-            <el-input v-model="row.User.name" autocomplete="off"></el-input>
+            <el-input
+              v-if="row.User"
+              v-model="row.User.name"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
           <el-form-item label="餐品名称:" :label-width="formLabelWidth">
             <el-select
-    v-model="row.Food.name"
-    multiple
-    collapse-tags
-    filterable
-    style="margin-left: 20px;"
-    placeholder="请选择">
-    <el-option
-      v-for="item in foodOptions"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
-    </el-option>
-  </el-select>
+              v-if="row.Food"
+              v-model="row.Food.name"
+              multiple
+              collapse-tags
+              filterable
+              style="margin-left: 20px"
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="item in foodOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="订单时间:" :label-width="formLabelWidth">
             <el-date-picker
-      v-model="row.time"
-      type="datetime"
-      placeholder="选择日期时间"
-      default-time="09:00:00">
-    </el-date-picker>
+              v-model="row.time"
+              type="datetime"
+              placeholder="选择日期时间"
+              default-time="09:00:00"
+            >
+            </el-date-picker>
           </el-form-item>
           <el-form-item label="订单状态:" :label-width="formLabelWidth">
             <el-select v-model="row.status" clearable placeholder="请选择">
@@ -191,7 +206,6 @@ export default {
       },
       title: "",
       total: 0,
-      url:'https://img2.baidu.com/it/u=1914820766,171297871&fm=253&fmt=auto&app=138&f=PNG?w=500&h=500',
       imgSrc: "",
       loading: false,
       dialogFormVisible: false,
@@ -224,22 +238,28 @@ export default {
         { label: "制作中...", value: 0 },
         { label: "已出餐", value: 1 },
       ],
-      foodOptions: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }]
+      foodOptions: [
+        {
+          value: "选项1",
+          label: "黄金糕",
+        },
+        {
+          value: "选项2",
+          label: "双皮奶",
+        },
+        {
+          value: "选项3",
+          label: "蚵仔煎",
+        },
+        {
+          value: "选项4",
+          label: "龙须面",
+        },
+        {
+          value: "选项5",
+          label: "北京烤鸭",
+        },
+      ],
     };
   },
   async created() {
@@ -296,7 +316,7 @@ export default {
         if (valid) {
           if (!this.row.id) {
             // 新增
-            await orderMeal.add({...this.row}).then(() => {
+            await orderMeal.add({ ...this.row }).then(() => {
               this.search();
               this.dialogFormVisible = false;
               this.$message({
@@ -306,7 +326,7 @@ export default {
             });
             return;
           }
-          await orderMeal.update(this.row.id, {...this.row}).then(() => {
+          await orderMeal.update(this.row.id, { ...this.row }).then(() => {
             this.search();
             this.dialogFormVisible = false;
             this.$message({

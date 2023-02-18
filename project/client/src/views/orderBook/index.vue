@@ -2,7 +2,7 @@
  * @Description: 图书订单管理
  * @Author: 余子怡
  * @Date: 2023-02-10 16:33:38
- * @LastEditTime: 2023-02-17 19:06:03
+ * @LastEditTime: 2023-02-17 21:38:51
 -->
 <template>
   <div class="borrow">
@@ -48,25 +48,32 @@
         </el-table-column>
         <el-table-column align="center" label="相关用户">
           <template slot-scope="scope">
-            {{ scope.row.User.name }}
+            {{ scope.row.User?.name }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="图书名称">
           <template slot-scope="scope">
-            {{ scope.row.Book.name || "" }}
+            {{ scope.row.Book?.name || "" }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="图片">
           <template slot-scope="scope">
             <el-image
-        style="width: 100px; height: 100px"
-      :src="scope.row.picture ? scope.row.Book.picture : url"
-      fit="cover"></el-image>
+              style="width: 100px; height: 100px"
+              :src="
+                scope.row.picture
+                  ? scope.row.Book.picture
+                  : require('../../assets/alt/book.webp')
+              "
+              fit="cover"
+            ></el-image>
           </template>
         </el-table-column>
         <el-table-column align="center" label="书本状态">
           <template slot-scope="scope">
-            {{ options.find((it) => it.value === scope.row.status)?.label || "" }}
+            {{
+              options.find((it) => it.value === scope.row.status)?.label || ""
+            }}
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="200">
@@ -112,10 +119,18 @@
         </template>
         <el-form :model="row" :rules="rules" ref="ruleForm">
           <el-form-item label="相关用户:" :label-width="formLabelWidth">
-            <el-input v-model="row.User.name" autocomplete="off"></el-input>
+            <el-input
+              v-if="row.User"
+              v-model="row.User.name"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
           <el-form-item label="图书名称:" :label-width="formLabelWidth">
-            <el-input v-model="row.Book.name" autocomplete="off"></el-input>
+            <el-input
+              v-if="row.Book"
+              v-model="row.Book.name"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
           <el-form-item label="状态:" :label-width="formLabelWidth">
             <el-select v-model="row.status" clearable placeholder="请选择">
@@ -153,10 +168,10 @@
 
 <script>
 import borrow from "@/api/orderBook";
-import UploadImg from "@/components/uploadImg.vue"
+import UploadImg from "@/components/uploadImg.vue";
 export default {
   components: {
-    UploadImg
+    UploadImg,
   },
   data() {
     return {
@@ -168,34 +183,33 @@ export default {
       },
       title: "",
       total: 0,
-      url:'https://img2.baidu.com/it/u=1914820766,171297871&fm=253&fmt=auto&app=138&f=PNG?w=500&h=500',
       imgSrc: "",
       loading: false,
       dialogFormVisible: false,
       formLabelWidth: "160px",
-      // rules: {
-      //   name: [
-      //     {
-      //       required: true,
-      //       message: "请输入图书名称",
-      //       trigger: "blur",
-      //     },
-      //   ],
-      //   username: [
-      //     {
-      //       required: true,
-      //       message: "请输入相关用户姓名",
-      //       trigger: "blur",
-      //     },
-      //   ],
-      //   status: [
-      //     {
-      //       required: true,
-      //       message: "请输入图书状态",
-      //       trigger: "blur",
-      //     },
-      //   ],
-      // },
+      rules: {
+        // name: [
+        //   {
+        //     required: true,
+        //     message: "请输入图书名称",
+        //     trigger: "blur",
+        //   },
+        // ],
+        // username: [
+        //   {
+        //     required: true,
+        //     message: "请输入相关用户姓名",
+        //     trigger: "blur",
+        //   },
+        // ],
+        // status: [
+        //   {
+        //     required: true,
+        //     message: "请输入图书状态",
+        //     trigger: "blur",
+        //   },
+        // ],
+      },
       options: [
         { label: "未归还", value: 0 },
         { label: "捐赠", value: 1 },
@@ -254,7 +268,7 @@ export default {
         if (valid) {
           if (!this.row.id) {
             // 新增
-            await borrow.add({...this.row}).then(() => {
+            await borrow.add({ ...this.row }).then(() => {
               this.search();
               this.dialogFormVisible = false;
               this.$message({
@@ -264,7 +278,7 @@ export default {
             });
             return;
           }
-          await borrow.update(this.row.id, {...this.row}).then(() => {
+          await borrow.update(this.row.id, { ...this.row }).then(() => {
             this.search();
             this.dialogFormVisible = false;
             this.$message({

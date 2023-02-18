@@ -2,7 +2,7 @@
  * @Description: 订座管理
  * @Author: 余子怡
  * @Date: 2023-02-10 16:33:38
- * @LastEditTime: 2023-02-17 19:02:35
+ * @LastEditTime: 2023-02-17 20:56:21
 -->
 <template>
   <div class="orderSeat">
@@ -48,12 +48,12 @@
         </el-table-column>
         <el-table-column align="center" label="相关用户">
           <template slot-scope="scope">
-            {{ scope.row.User || scope.row.User.name }}
+            {{ scope.row.User?.name }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="座位号">
           <template slot-scope="scope">
-            {{ scope.row.Seat.seat_no || "" }}
+            {{ scope.row.Seat?.seat_no || "" }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="开始时间">
@@ -68,7 +68,9 @@
         </el-table-column>
         <el-table-column align="center" label="打卡状态">
           <template slot-scope="scope">
-            {{ options.find((it) => it.value === scope.row.status)?.label || "" }}
+            {{
+              options.find((it) => it.value === scope.row.status)?.label || ""
+            }}
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="200">
@@ -114,37 +116,49 @@
         </template>
         <el-form :model="row" :rules="rules" ref="ruleForm">
           <el-form-item label="相关用户:" :label-width="formLabelWidth">
-            <el-input v-model="row.User.name" autocomplete="off"></el-input>
+            <el-input
+              v-if="row.User"
+              v-model="row.User.name"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
-          <el-form-item label="座位号:" :label-width="formLabelWidth">
+          <el-form-item
+            label="座位号:"
+            v-if="row.Seat"
+            :label-width="formLabelWidth"
+          >
             <el-select
-    v-model="row.Seat.seat_no"
-    multiple
-    collapse-tags
-    filterable
-    style="margin-left: 20px;"
-    placeholder="请选择">
-    <el-option
-      v-for="item in seatOptions"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
-    </el-option>
-  </el-select>
+              v-model="row.Seat.seat_no"
+              multiple
+              collapse-tags
+              filterable
+              style="margin-left: 20px"
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="item in seatOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="订单时间:" :label-width="formLabelWidth">
             <el-date-picker
-      v-model="row.start_time"
-      type="datetime"
-      placeholder="选择开始日期时间"
-      default-time="09:00:00">
-    </el-date-picker>
-    <el-date-picker
-      v-model="row.end_time"
-      type="datetime"
-      placeholder="选择结束日期时间"
-      default-time="09:00:00">
-    </el-date-picker>
+              v-model="row.start_time"
+              type="datetime"
+              placeholder="选择开始日期时间"
+              default-time="09:00:00"
+            >
+            </el-date-picker>
+            <el-date-picker
+              v-model="row.end_time"
+              type="datetime"
+              placeholder="选择结束日期时间"
+              default-time="09:00:00"
+            >
+            </el-date-picker>
           </el-form-item>
           <el-form-item label="订单状态:" :label-width="formLabelWidth">
             <el-select v-model="row.status" clearable placeholder="请选择">
@@ -194,54 +208,60 @@ export default {
       },
       title: "",
       total: 0,
-      url:'https://img2.baidu.com/it/u=1914820766,171297871&fm=253&fmt=auto&app=138&f=PNG?w=500&h=500',
+      url: "https://img2.baidu.com/it/u=1914820766,171297871&fm=253&fmt=auto&app=138&f=PNG?w=500&h=500",
       imgSrc: "",
       loading: false,
       dialogFormVisible: false,
       formLabelWidth: "160px",
-      // rules: {
-      //   name: [
-      //     {
-      //       required: true,
-      //       message: "请输入餐品名称",
-      //       trigger: "blur",
-      //     },
-      //   ],
-      //   username: [
-      //     {
-      //       required: true,
-      //       message: "请输入相关用户姓名",
-      //       trigger: "blur",
-      //     },
-      //   ],
-      //   status: [
-      //     {
-      //       required: true,
-      //       message: "请输入订单状态",
-      //       trigger: "blur",
-      //     },
-      //   ],
-      // },
+      rules: {
+        // name: [
+        //   {
+        //     required: true,
+        //     message: "请输入餐品名称",
+        //     trigger: "blur",
+        //   },
+        // ],
+        // username: [
+        //   {
+        //     required: true,
+        //     message: "请输入相关用户姓名",
+        //     trigger: "blur",
+        //   },
+        // ],
+        // status: [
+        //   {
+        //     required: true,
+        //     message: "请输入订单状态",
+        //     trigger: "blur",
+        //   },
+        // ],
+      },
       options: [
         { label: "未打卡", value: 0 },
         { label: "已打卡", value: 1 },
       ],
-      seatOptions: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }]
+      seatOptions: [
+        {
+          value: "选项1",
+          label: "黄金糕",
+        },
+        {
+          value: "选项2",
+          label: "双皮奶",
+        },
+        {
+          value: "选项3",
+          label: "蚵仔煎",
+        },
+        {
+          value: "选项4",
+          label: "龙须面",
+        },
+        {
+          value: "选项5",
+          label: "北京烤鸭",
+        },
+      ],
     };
   },
   async created() {
@@ -300,7 +320,7 @@ export default {
         if (valid) {
           if (!this.row.id) {
             // 新增
-            await orderSeat.add({...this.row}).then(() => {
+            await orderSeat.add({ ...this.row }).then(() => {
               this.search();
               this.dialogFormVisible = false;
               this.$message({
@@ -310,7 +330,7 @@ export default {
             });
             return;
           }
-          await orderSeat.update(this.row.id, {...this.row}).then(() => {
+          await orderSeat.update(this.row.id, { ...this.row }).then(() => {
             this.search();
             this.dialogFormVisible = false;
             this.$message({

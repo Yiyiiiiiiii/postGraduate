@@ -2,7 +2,7 @@
  * @Description: 个人中心
  * @Author: 余子怡
  * @Date: 2023-02-07 21:51:53
- * @LastEditTime: 2023-02-12 23:10:35
+ * @LastEditTime: 2023-02-17 21:36:23
 -->
 <template>
   <div class="personal">
@@ -11,9 +11,8 @@
       <!-- 头像 -->
       <div class="avatar">
         <el-image
-          v-if="user.avatar"
           class="avatar-img"
-          :src="user.avatar || url"
+          :src="user.avatar || require('../../assets/alt/avatar.jpeg')"
         ></el-image>
         <div class="avatar-bottom">
           <p class="upload" @click="uploadImg = true">更换头像</p>
@@ -26,7 +25,9 @@
             <!-- 用户名 -->
             <span class="username">{{ user.account }}</span>
             <i v-if="user.sex == '女'" class="icon-sex"
-              ><img src="../../assets/personal/woman.svg"
+              ><img
+                src="../../assets/personal/woman.svg"
+                style="width: 20px; height: 37px; margin-left: 10px"
             /></i>
             <i v-if="user.sex == '男' || user.sex == ''" class="icon-sex"
               ><img src="../../assets/personal/man.svg"
@@ -147,7 +148,7 @@
     <!-- 上传头像弹窗 -->
     <el-dialog title="更换头像" :visible.sync="uploadImg">
       <!-- 图片上传 -->
-      <UploadImg @imgChange="imageUpload"/>
+      <UploadImg @imgChange="imageUpload" />
       <div slot="footer" class="dialog-footer">
         <el-button @click="uploadImg = false">取 消</el-button>
         <el-button type="primary" @click="handleImg">确 定</el-button>
@@ -161,14 +162,14 @@ import moment from "moment";
 import userApi from "@/api/user";
 import orderSeat from "@/api/orderSeat";
 import { getTimeTranslate } from "@/utils/time.js";
-import UploadImg from "@/components/uploadImg.vue"
+import UploadImg from "@/components/uploadImg.vue";
 export default {
   components: {
-    UploadImg
+    UploadImg,
   },
   data() {
     return {
-      url: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg", //头像
+      // url: "@/assets/alt/avatar.jpeg", //头像
       user: {}, //用户信息
       check: 0,
       seatTable: [],
@@ -179,7 +180,7 @@ export default {
       form: {},
       userform: {},
       formLabelWidth: "160px",
-      imgSrc:''
+      imgSrc: "",
     };
   },
   async created() {
@@ -238,8 +239,8 @@ export default {
       this.updateInfo = false;
     },
     // 上传图片
-    imageUpload(images){
-      this.imgSrc = images
+    imageUpload(images) {
+      this.imgSrc = images;
     },
     // 确认修改头像
     handleImg() {

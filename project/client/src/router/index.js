@@ -2,7 +2,7 @@
  * @Description: 路由
  * @Author: 余子怡
  * @Date: 2023-01-20 17:18:20
- * @LastEditTime: 2023-02-17 19:26:49
+ * @LastEditTime: 2023-02-17 20:50:55
  */
 import Vue from 'vue'
 import VueRouter from 'vue-router'
@@ -84,8 +84,8 @@ children:[
     }
   },
   {
-    path: '/orderSeat',
-    name: 'OrderSeat',
+    path: '/orderSeats',
+    name: 'OrderSeats',
     component: () => import('@/views/orderSeat/index.vue'),
     meta:{
       id:8,
@@ -104,8 +104,8 @@ children:[
     }
   },
   {
-    path: '/orderMeal',
-    name: 'OrderMeal',
+    path: '/orderMeals',
+    name: 'OrderMeals',
     component: () => import('@/views/orderMeal/index.vue'),
     meta:{
       id:10,
@@ -123,8 +123,8 @@ children:[
       role:1
     }
   },{
-    path: '/orderBook',
-    name: 'OrderBook',
+    path: '/orderBooks',
+    name: 'OrderBooks',
     component: () => import('@/views/orderBook/index.vue'),
     meta:{
       id:12,

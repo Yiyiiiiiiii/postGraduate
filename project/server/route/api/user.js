@@ -2,7 +2,7 @@
  * @Description: 用户接口
  * @Author: 余子怡
  * @Date: 2022-05-04 22:42:52
- * @LastEditTime: 2023-01-20 16:32:34
+ * @LastEditTime: 2023-02-17 20:35:09
  */
 const express = require('express');
 const router = express.Router();
@@ -53,8 +53,6 @@ router.post('/login', asyncHandler(async (req, res, next) => {
             domain: 'localhost',
             maxAge: 3600 * 1000 * 24 * 7 //毫秒
         });
-        const role = 1;
-        result.role = role;
         res.header('authorization', value);
     }
     return result;

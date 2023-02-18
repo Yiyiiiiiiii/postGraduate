@@ -2,7 +2,7 @@
  * @Description: 
  * @Author: 余子怡
  * @Date: 2023-01-15 21:46:50
- * @LastEditTime: 2023-02-12 23:58:36
+ * @LastEditTime: 2023-02-18 14:15:18
  */
 const Book = require('../models/book');
 const validate = require('validate.js')
@@ -42,6 +42,18 @@ exports.addBook = async function (bookObj) {
             },
             type: 'number',
         },
+        introduction: {
+            presence: {
+                allowEmpty: false
+            },
+            type: 'string',
+        },
+        author: {
+            presence: {
+                allowEmpty: false
+            },
+            type: 'string',
+        },
     }
     await validate.async(bookObj, rule)
     const ins = await Book.create(bookObj);
@@ -72,9 +84,9 @@ exports.getBookById = async function (id) {
 }
 
 exports.getBooks = async function (
-    { name,type, page = 1, limit = 1000 }
+    { name, type, page = 1, limit = 1000 }
 ) {
-    console.log(name,type);
+    console.log(name, type);
     const where = {};
     if (name) {
         where.name = {
@@ -87,7 +99,7 @@ exports.getBooks = async function (
         };
     }
     const result = await Book.findAndCountAll({
-        attributes: ['id', 'name', 'picture', 'type', 'stock'],
+        attributes: ['id', 'name', 'picture', 'type', 'stock', 'introduction', 'author'],
         where,
         offset: (page - 1) * limit,
         limit: +limit,
